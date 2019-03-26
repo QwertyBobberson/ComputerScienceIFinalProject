@@ -1,3 +1,4 @@
+import java.time.LocalDateTime;
 import java.util.Random;
 
 public class Member
@@ -24,20 +25,18 @@ public class Member
     
     public void PrintCheckedOut()
     {
-	int index = 0;
 	for(int i = 0; i < booksOut.length; i++)
 	{
 	    if(booksOut[i] != null)
 	    {
-		index++;
-		System.out.println("\t" + index + ": " + booksOut[i].name);
+		System.out.println("\t" + booksOut[i].ISBN + ": " + booksOut[i].name);
 	    }
 	}
     }
     
     public void CheckOut(Book book)
     {
-	if(book.in == false)
+	if(book.in)
 	{
 	    for(int i = 0; i < booksOut.length; i++)
 	    {
@@ -46,6 +45,8 @@ public class Member
 		    booksOut[i] = book;
 		    System.out.println(name + " has checked out \"" + book.name + "\"\n");
 		    book.in = false;
+		    book.dateOut = LocalDateTime.now();
+		    book.dateIn = LocalDateTime.now().plusWeeks(2);
 		    return;
 		}
 	    }
@@ -66,6 +67,8 @@ public class Member
 		    booksOut[i] = null;
 		    System.out.println(name + " has checked \"" + book.name + "\" in.\n");
 		    book.in = true;
+		    book.dateIn = null;
+		    book.dateOut = null;
 		    return;
 		}		
 	    }

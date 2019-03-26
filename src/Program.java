@@ -21,6 +21,7 @@ public class Program
     
     private static void ShowMenu()
     {
+	System.out.println("\n\n\n");
 	//Displays a list of the options
 	System.out.println("1 - Members");
 	System.out.println("2 - Books");
@@ -51,71 +52,65 @@ public class Program
     
     private static void ShowMembers()
     {
+	System.out.println("\n\n\n");
 	//List all members
 	for(int i = 0; i < members.length; i++)
 	{
 	    if(members[i] != null)
 	    {
-		System.out.println((i + 1) + " - " + members[i].id + " - " + members[i].name);		
+		System.out.println(members[i].id + " - " + members[i].name);		
 	    }
 	}
 	
 	System.out.println("0 - Back");
-	
-        int choice = input.nextInt();
+	input.nextLine();
+        String choice = input.nextLine();
         
-        if(choice == 0)
+        if(choice.equals("0"))
         {
             ShowMenu();
         }
         
         //Show the information of the selected member
-        try
-        {		
-    		ShowMember(members[choice - 1]);
-        }
-        //Warn the user if they select an invalid number
-        catch(Exception e)
+        for(int i = 0; i < members.length; i++)
         {
-    		System.out.println("Please enter the number corresponding to the member you would like to view the information of.");
-    		ShowMembers();
+            if(members[i].id.equals(choice))
+            {
+        	ShowMember(members[i]);
+            }
         }
     }
     
     private static void ShowBooks()
     {
+	System.out.println("\n\n\n");
 	//List all the books
 	for(int i = 0; i < books.length; i++)
 	{
 	    if(books[i] != null)
 	    {
-		System.out.println((i + 1) + " - " + books[i].name);		
+		System.out.println(books[i].ISBN + " - " + books[i].name);		
 	    }
 	}
 
 	System.out.println("0 - Back");
-	
-        int choice = input.nextInt();
+	input.nextLine();
+        String choice = input.nextLine();
         
-        if(choice == 0)
-        {
-            ShowMenu();
-        }
-    	//Show the information of the book selected    
-	try
-	{		
-	    books[choice - 1].PrintInfo();
-    	}
-	//Tell the user if their option is invalid
-	catch(Exception e)
+        for(int i = 0; i < books.length; i++)
 	{
-	    System.out.println("Please enter the number corresponding to the book you would like to view the information of.");
-	    ShowBooks();
+	    if(books[i].ISBN.equals(choice))
+	    {
+		books[i].PrintInfo();;
+	    }
 	}
+        
+        BookActionCompleted();
     }
     
     private static void ShowMember(Member member)
     {
+	System.out.println("\n\n\n");
 	member.PrintInfo();
 	//The options on a specific member's profile
 	System.out.println("1 - Check Out");
@@ -146,19 +141,29 @@ public class Program
     
     public static void ShowCheckInMenu(Member member)
     {
-	int choice;
+	System.out.println("\n\n\n");
+	String choice;
 	
 	System.out.println("Books Checked Out:");
 	member.PrintCheckedOut();;
-	System.out.println("Select a book to check in.");
-	choice = input.nextInt();
-	member.CheckIn(member.booksOut[choice - 1]);
+	System.out.println("Type the ISBN of the book to be checked in.");
+	input.nextLine();
+	choice = input.nextLine();
+	System.out.println("Choice: " + choice);
+	for(int i = 0; i < books.length; i++)
+	{
+	    if(books[i].ISBN.equals(choice))
+	    {
+		member.CheckIn(books[i]);
+	    }
+	}
 	
-	ActionCompleted(member);
+	UserActionCompleted(member);
 	
     }
     private static void ShowCheckOutMenu(Member member)
     {
+	System.out.println("\n\n\n");
 	int choice;
 	
 	for(int i = 0; i < books.length; i++)
@@ -169,17 +174,14 @@ public class Program
 	choice = input.nextInt();
 	member.CheckOut(books[choice - 1]);
 	
-	System.out.println("1 - Back To Menu\n2 - Back to Member Profile");
-	
-	choice = input.nextInt() ;
-	
-	ActionCompleted(member);
+	UserActionCompleted(member);
 	
     }
     
     
-    public static void ActionCompleted(Member member)
+    public static void UserActionCompleted(Member member)
     {
+	System.out.println("\n\n\n");
 	System.out.println("1 - Back To Menu\n2 - Back to Member Profile");
 	
 	int choice = input.nextInt() ;
@@ -191,6 +193,24 @@ public class Program
 		break;
 	    case 2:
 		ShowMember(member);
+		break;
+	}
+    }
+    
+    public static void BookActionCompleted()
+    {
+	System.out.println("\n\n\n");
+	System.out.println("1 - Back To Menu\n2 - Back to Book List");
+	
+	int choice = input.nextInt() ;
+	
+	switch(choice)
+	{
+	    case 1:
+		ShowMenu();
+		break;
+	    case 2:
+		ShowBooks();
 		break;
 	}
     }
