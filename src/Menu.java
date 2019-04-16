@@ -81,29 +81,34 @@ public class Menu
     
     private static void ShowBooks()
     {
-	System.out.println("\n\n\n");
-	//List all the books
-	for(int i = 0; i < books.length; i++)
+	boolean found = false;
+	do
 	{
-	    if(books[i] != null)
+	    System.out.println("\n\n\n");
+	    //List all the books
+	    for(int i = 0; i < books.length; i++)
 	    {
-		System.out.println(books[i].ISBN + " - " + books[i].name);		
+		if(books[i] != null)
+		{
+		    System.out.println(books[i].ISBN + " - " + books[i].name);		
+		}
 	    }
-	}
-
-	System.out.println("0 - Back");
-	input.nextLine();
-        String choice = input.nextLine();
-        
-        for(int i = 0; i < books.length; i++)
-	{
-	    if(books[i].ISBN.equals(choice))
+	    
+	    System.out.println("0 - Back");
+	    input.nextLine();
+	    String choice = input.next();
+	    
+	    for(int i = 0; i < books.length; i++)
 	    {
-		books[i].PrintInfo();;
+		if(books[i].ISBN.equals(choice))
+		{
+		    System.out.println("\n\n\n");
+		    books[i].PrintInfo();;
+		    found = true;
+		}
 	    }
-	}
-        
-        BookActionCompleted();
+	} while(!found);
+	BookActionCompleted();
     }
     
     private static void ShowMember(Member member)
@@ -139,46 +144,66 @@ public class Menu
     
     public static void ShowCheckInMenu(Member member)
     {
-	System.out.println("\n\n\n");
-	String choice;
+	boolean selected = false;
 	
-	System.out.println("Books Checked Out:");
-	member.PrintCheckedOut();;
-	System.out.println("Type the ISBN of the book to be checked in.");
-	input.nextLine();
-	choice = input.nextLine();
-	System.out.println("Choice: " + choice);
-	for(int i = 0; i < books.length; i++)
+	do
 	{
-	    if(books[i].ISBN.equals(choice))
+	    
+	    System.out.println("\n\n\n");
+	    String choice;
+	    
+	    System.out.println("Books Checked Out:");
+	    member.PrintCheckedOut();;
+	    System.out.println("Type the ISBN of the book to be checked in.");
+	    input.nextLine();
+	    choice = input.nextLine();
+	    System.out.println("Choice: " + choice);
+	    for(int i = 0; i < books.length; i++)
 	    {
-		member.CheckIn(books[i]);
+		if(books[i].ISBN.equals(choice))
+		{
+		    member.CheckIn(books[i]);
+		    selected = true;
+		}
 	    }
-	}
+	} while(!selected);
 	
 	UserActionCompleted(member);
 	
     }
     private static void ShowCheckOutMenu(Member member)
     {
-	System.out.println("\n\n\n");
-	int choice;
-	
-	for(int i = 0; i < books.length; i++)
+	boolean selected = false;
+	do
 	{
-	    System.out.println((i + 1) + ": " + books[i].name);
-	}
-	System.out.println("Please select a book to check out.");
-	choice = input.nextInt();
-	member.CheckOut(books[choice - 1]);
-	
+	    
+	    System.out.println("\n\n\n");
+	    int choice;
+	    
+	    for(int i = 0; i < books.length; i++)
+	    {
+		System.out.println((i + 1) + ": " + books[i].name);
+	    }
+	    System.out.println("Please select a book to check out.");
+	    try
+	    {	
+		
+		choice = input.nextInt();
+		member.CheckOut(books[choice - 1]);
+		selected = true;
+	    }
+	    catch (Exception e)
+	    {
+		
+	    }
+	    
+	} while(!selected);
 	UserActionCompleted(member);
-	
     }
     
     
     public static void UserActionCompleted(Member member)
-    {
+    {    
 	System.out.println("\n\n\n");
 	System.out.println("1 - Back To Menu\n2 - Back to Member Profile");
 	
@@ -192,11 +217,17 @@ public class Menu
 	    case 2:
 		ShowMember(member);
 		break;
+		
+	    default:
+		System.out.println("Please type the number that correspondes to the action you wish to take.");
+		UserActionCompleted(member);
+		break;
 	}
     }
     
     public static void BookActionCompleted()
     {
+	
 	System.out.println("\n\n\n");
 	System.out.println("1 - Back To Menu\n2 - Back to Book List");
 	
@@ -210,7 +241,12 @@ public class Menu
 	    case 2:
 		ShowBooks();
 		break;
+	    default:
+		System.out.println("Please type the number that correspondes to the action you wish to take.");
+		BookActionCompleted();
+		break;
 	}
+	
     }
     
     private static void Quit()
@@ -218,5 +254,5 @@ public class Menu
 	input.close();
 	System.exit(0);
     }
-
+    
 }
