@@ -44,33 +44,39 @@ public class Menu
     
     private static void ShowMembers()
     {
-	System.out.println("\n\n\n");
-	//List all members
-	for(int i = 0; i < members.length; i++)
+	boolean found = false;
+	do
 	{
-	    if(members[i] != null)
+	    System.out.println("\n\n\n");
+	    //List all members
+	    for(int i = 0; i < members.length; i++)
 	    {
-		System.out.println(members[i].id + " - " + members[i].name);		
+		if(members[i] != null)
+		{
+		    System.out.println(members[i].id + " - " + members[i].name);		
+		}
+	    }
+	    
+	    System.out.println("0 - Back");
+	    input.nextLine();
+	    String choice = input.next();
+	    
+	    if(choice.equals("0"))
+	    {
+		ShowMenu();
+	    }
+	    
+	    //Show the information of the selected member
+	    for(int i = 0; i < members.length; i++)
+	    {
+		if(members[i].id.equals(choice))
+		{
+		    ShowMember(members[i]);
+		    found = true;
+		}
 	    }
 	}
-	
-	System.out.println("0 - Back");
-	input.nextLine();
-        String choice = input.nextLine();
-        
-        if(choice.equals("0"))
-        {
-            ShowMenu();
-        }
-        
-        //Show the information of the selected member
-        for(int i = 0; i < members.length; i++)
-        {
-            if(members[i].id.equals(choice))
-            {
-        	ShowMember(members[i]);
-            }
-        }
+	while(!found);
     }
     
     private static void ShowBooks()
@@ -209,6 +215,7 @@ public class Menu
     
     private static void Quit()
     {
+	input.close();
 	System.exit(0);
     }
 
