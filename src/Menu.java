@@ -13,14 +13,23 @@ public class Menu
     
     public static void ShowMenu()
     {
-	
-	System.out.println("\n\n\n");
 	//Displays a list of the options
 	System.out.println("1 - Members");
 	System.out.println("2 - Books");
 	System.out.println("3 - Exit");
 	
-	int choice = input.nextInt();
+	int choice;	
+	
+	try
+	{
+	    choice = input.nextInt();
+	}
+	catch (Exception e)
+	{
+	    System.out.println("Please type the number that corresponds to your choice.");
+	    input.next();
+	    return;
+	}
 	
 	//Logic for loading the selected menu
 	switch(choice)
@@ -35,10 +44,8 @@ public class Menu
 		Quit();
 		break;
 	    default:
-		//Tell the user if they select an invalid option
 		System.out.println("Please type the number that corresponds to the menu you wish to see.");
-		ShowMenu();
-		break;
+		return;
 	}
 	
 	
@@ -65,7 +72,7 @@ public class Menu
 	    
 	    if(choice.equals("0"))
 	    {
-		ShowMenu();
+		return;
 	    }
 	    
 	    //Show the information of the selected member
@@ -123,8 +130,18 @@ public class Menu
 	System.out.println("1 - Check Out");
 	System.out.println("2 - Check In");
 	System.out.println("3 - Back");
+	int choice;
 	
-	int choice = input.nextInt();
+	try
+	{	    
+	    choice = input.nextInt();
+	}
+	catch(Exception e)
+	{
+	    input.next();
+	    ShowMember(member);
+	    return;
+	}
 	
 	//Does the action the user asked for
 	switch(choice) 
@@ -155,17 +172,16 @@ public class Menu
 	{
 	    
 	    System.out.println("\n\n\n");
-	    String choice;
+	    int choice;
 	    
 	    System.out.println("Books Checked Out:");
 	    member.PrintCheckedOut();;
 	    System.out.println("Type the ISBN of the book to be checked in.");
-	    input.nextLine();
-	    choice = input.nextLine();
+	    choice = input.nextInt();
 	    System.out.println("Choice: " + choice);
 	    for(int i = 0; i < books.length; i++)
 	    {
-		if(books[i].ISBN.equals(choice))
+		if(books[i].ISBN.equals(Integer.toString(choice)))
 		{
 		    member.CheckIn(books[i]);
 		    selected = true;
@@ -178,11 +194,7 @@ public class Menu
 	
     }
     private static void ShowCheckOutMenu(Member member)
-    { 
-	boolean selected = false;
-	do
-	{
-	    
+    {     
 	    System.out.println("\n\n\n");
 	    int choice;
 	    
@@ -190,20 +202,22 @@ public class Menu
 	    {
 		System.out.println((i + 1) + ": " + books[i].name);
 	    }
+	    
 	    System.out.println("Please select a book to check out.");
+	    
 	    try
 	    {	
 		
 		choice = input.nextInt();
 		member.CheckOut(books[choice - 1]);
-		selected = true;
 	    }
 	    catch (Exception e)
 	    {
-		
+		input.next();
+		ShowCheckOutMenu(member);
+		return;
 	    }
 	    
-	} while(!selected);
 	UserActionCompleted(member);
 	
     }
@@ -214,17 +228,26 @@ public class Menu
 	System.out.println("\n\n\n");
 	System.out.println("1 - Back To Menu\n2 - Back to Member Profile");
 	
-	int choice = input.nextInt() ;
+	int choice;
+	
+	try
+	{
+	    choice = input.nextInt();
+	}
+	catch(Exception e)
+	{
+	    input.next();
+	    UserActionCompleted(member);
+	    return;
+	}
 	
 	switch(choice)
 	{
 	    case 1:
-		ShowMenu();
-		break;
+		return;
 	    case 2:
 		ShowMember(member);
 		break;
-		
 	    default:
 		System.out.println("Please type the number that correspondes to the action you wish to take.");
 		UserActionCompleted(member);
@@ -239,13 +262,23 @@ public class Menu
 	System.out.println("\n\n\n");
 	System.out.println("1 - Back To Menu\n2 - Back to Book List");
 	
-	int choice = input.nextInt() ;
+	int choice;
+	
+	try
+	{
+	    choice = input.nextInt();
+	}
+	catch(Exception e)
+	{
+	    input.next();
+	    BookActionCompleted();
+	    return;
+	}
 	
 	switch(choice)
 	{
 	    case 1:
-		ShowMenu();
-		break;
+		return;
 	    case 2:
 		ShowBooks();
 		break;
