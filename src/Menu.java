@@ -175,10 +175,21 @@ public class Menu
 	    int choice;
 	    
 	    System.out.println("Books Checked Out:");
-	    member.PrintCheckedOut();;
+	    member.PrintCheckedOut();
+	    System.out.println("0: Exit");
 	    System.out.println("Type the ISBN of the book to be checked in.");
-	    choice = input.nextInt();
-	    System.out.println("Choice: " + choice);
+		
+		try
+		{
+		    choice = input.nextInt();
+		}
+		catch(Exception e)
+		{
+		    input.next();
+		    ShowCheckInMenu(member);
+		    return;
+		}
+		
 	    for(int i = 0; i < books.length; i++)
 	    {
 		if(books[i].ISBN.equals(Integer.toString(choice)))
@@ -187,6 +198,13 @@ public class Menu
 		    selected = true;
 		}
 	    }
+	    
+	    
+	    if(choice == 0)
+	    {
+		selected = true;
+	    }
+	    
 	} while(!selected);
 	
 	UserActionCompleted(member);
