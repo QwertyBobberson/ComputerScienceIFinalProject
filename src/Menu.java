@@ -1,24 +1,23 @@
 import java.util.Scanner;
+import java.io.*;
+import java.util.ArrayList;
 
 public class Menu
 {
-    // private static Member[] members = new Member[4];
-    // private static Book[] books = new Book[16];
-    // private static Scanner input = new Scanner(System.in);
-    
-    //This sets the variables for testing, can be removed once saving is implemented
-    private static Member[] members = {new Member("Ayssa Welk"), new Member("Qwerty Bobberson"), new Member("Gavin Brock"), new Member("Holly Meyer")};
-    private static Book[] books = {new Book("Harry Potter"), new Book("Percy Jackson"), new Book("Magnus Chase"), new Book("Sword Art Online"), new Book("Boku No Hero Academia"), new Book("Legend of Zelda"), new Book("Doctor Who"), new Book("Dan Machi")};
+    private static ArrayList<Member> members = new ArrayList<Member>();
+    private static ArrayList<Book> books = new ArrayList<Book>();
     private static Scanner input = new Scanner(System.in);
+    
+    
+    private static int choice;
     
     public static void ShowMenu()
     {
+	Load();
 	//Displays a list of the options
 	System.out.println("1 - Members");
 	System.out.println("2 - Books");
 	System.out.println("3 - Exit");
-	
-	int choice;	
 	
 	try
 	{
@@ -48,7 +47,7 @@ public class Menu
 		return;
 	}
 	
-	
+	Save();
     }
     
     private static void ShowMembers()
@@ -58,29 +57,36 @@ public class Menu
 	{
 	    System.out.println("\n\n\n");
 	    //List all members
-	    for(int i = 0; i < members.length; i++)
+	    for(int i = 0; i < members.size(); i++)
 	    {
-		if(members[i] != null)
+		if(members.get(i) != null)
 		{
-		    System.out.println(members[i].id + " - " + members[i].name);		
+		    System.out.println(members.get(i).id + " - " + members.get(i).name);		
 		}
 	    }
 	    
-	    System.out.println("0 - Back");
+	    System.out.println("0 - New Member\n1 - Back");
 	    input.nextLine();
 	    String choice = input.next();
 	    
 	    if(choice.equals("0"))
 	    {
+		members.add(CreateNewMember());
+		System.out.println("New Member Added, returning to menu.");
+		return;
+	    }
+	    
+	    if(choice.equals("1"))
+	    {
 		return;
 	    }
 	    
 	    //Show the information of the selected member
-	    for(int i = 0; i < members.length; i++)
+	    for(int i = 0; i < members.size(); i++)
 	    {
-		if(members[i].id.equals(choice))
+		if(members.get(i).id.equals(choice))
 		{
-		    ShowMember(members[i]);
+		    ShowMember(members.get(i));
 		    found = true;
 		}
 	    }
@@ -96,24 +102,36 @@ public class Menu
 	{
 	    System.out.println("\n\n\n");
 	    //List all the books
-	    for(int i = 0; i < books.length; i++)
+	    for(int i = 0; i < books.size(); i++)
 	    {
-		if(books[i] != null)
+		if(books.get(i) != null)
 		{
-		    System.out.println(books[i].ISBN + " - " + books[i].name);		
+		    System.out.println(books.get(i).ISBN + " - " + books.get(i).name);		
 		}
 	    }
 	    
-	    System.out.println("0 - Back");
+	    System.out.println("0 - Add New Book\n1 - Back");
 	    input.nextLine();
 	    String choice = input.next();
 	    
-	    for(int i = 0; i < books.length; i++)
+	    if(choice.equals("0"))
 	    {
-		if(books[i].ISBN.equals(choice))
+		books.add(CreateNewBook());
+		System.out.println("Book added to library. Returning to menu.");
+		return;
+	    }
+	    
+	    if(choice.equals("1"))
+	    {
+		return;
+	    }
+	    
+	    for(int i = 0; i < books.size(); i++)
+	    {
+		if(books.get(i).ISBN.equals(choice))
 		{
 		    System.out.println("\n\n\n");
-		    books[i].PrintInfo();;
+		    books.get(i).PrintInfo();;
 		    found = true;
 		}
 	    }
@@ -130,7 +148,7 @@ public class Menu
 	System.out.println("1 - Check Out");
 	System.out.println("2 - Check In");
 	System.out.println("3 - Back");
-	int choice;
+	
 	
 	try
 	{	    
@@ -164,6 +182,7 @@ public class Menu
     }
     
     public static void ShowCheckInMenu(Member member)
+    
     {
 	
 	boolean selected = false;
@@ -172,29 +191,29 @@ public class Menu
 	{
 	    
 	    System.out.println("\n\n\n");
-	    int choice;
+	    
 	    
 	    System.out.println("Books Checked Out:");
 	    member.PrintCheckedOut();
 	    System.out.println("0: Exit");
 	    System.out.println("Type the ISBN of the book to be checked in.");
-		
-		try
-		{
-		    choice = input.nextInt();
-		}
-		catch(Exception e)
-		{
-		    input.next();
-		    ShowCheckInMenu(member);
-		    return;
-		}
-		
-	    for(int i = 0; i < books.length; i++)
+	    
+	    try
 	    {
-		if(books[i].ISBN.equals(Integer.toString(choice)))
+		choice = input.nextInt();
+	    }
+	    catch(Exception e)
+	    {
+		input.next();
+		ShowCheckInMenu(member);
+		return;
+	    }
+	    
+	    for(int i = 0; i < books.size(); i++)
+	    {
+		if(books.get(i).ISBN.equals(Integer.toString(choice)))
 		{
-		    member.CheckIn(books[i]);
+		    member.CheckIn(books.get(i));
 		    selected = true;
 		}
 	    }
@@ -211,42 +230,42 @@ public class Menu
 	
 	
     }
+    
     private static void ShowCheckOutMenu(Member member)
     {     
-	    System.out.println("\n\n\n");
-	    int choice;
+	System.out.println("\n\n\n");
+	
+	
+	for(int i = 0; i < books.size(); i++)
+	{
+	    System.out.println((i + 1) + ": " + books.get(i).name);
+	}
+	
+	System.out.println("Please select a book to check out.");
+	
+	try
+	{	
 	    
-	    for(int i = 0; i < books.length; i++)
-	    {
-		System.out.println((i + 1) + ": " + books[i].name);
-	    }
-	    
-	    System.out.println("Please select a book to check out.");
-	    
-	    try
-	    {	
-		
-		choice = input.nextInt();
-		member.CheckOut(books[choice - 1]);
-	    }
-	    catch (Exception e)
-	    {
-		input.next();
-		ShowCheckOutMenu(member);
-		return;
-	    }
-	    
+	    choice = input.nextInt();
+	    member.CheckOut(books.get(choice - 1));
+	}
+	catch (Exception e)
+	{
+	    input.next();
+	    ShowCheckOutMenu(member);
+	    return;
+	}
+	
 	UserActionCompleted(member);
 	
     }
-    
     
     public static void UserActionCompleted(Member member)
     {    
 	System.out.println("\n\n\n");
 	System.out.println("1 - Back To Menu\n2 - Back to Member Profile");
 	
-	int choice;
+	
 	
 	try
 	{
@@ -280,7 +299,7 @@ public class Menu
 	System.out.println("\n\n\n");
 	System.out.println("1 - Back To Menu\n2 - Back to Book List");
 	
-	int choice;
+	
 	
 	try
 	{
@@ -308,11 +327,131 @@ public class Menu
 	
     }
     
+    private static Member CreateNewMember()
+    {
+	System.out.print("First Name: ");
+	String firstName = input.next();
+	
+	System.out.print("Last Name: ");
+	String lastName = input.next();
+	
+	return new Member(firstName + " " + lastName);
+    }
+    
+    private static Book CreateNewBook()
+    {
+	System.out.print("Name of Book: ");
+	input.nextLine();
+	String name = input.nextLine();
+	return new Book(name);
+    }
+    
     private static void Quit()
     {
+	Save();
 	input.close();
 	System.exit(0);
     }
     
+    private static void Save()
+    {
+	try
+	{   
+	    PrintWriter b = new PrintWriter("Books.txt");
+	    b.close();
+	    
+	    FileOutputStream booksFile = new FileOutputStream("Books.txt");
+	    
+	    ObjectOutputStream booksSave = new ObjectOutputStream(booksFile);
+	    
+	    booksSave.writeObject(books);
+	    
+	    
+	    booksSave.close();
+	    booksFile.close();
+	    
+	}
+	catch (IOException e)
+	{
+	    System.out.println("Failed to save books.");
+	}
+	
+	try
+	{
+	    PrintWriter m = new PrintWriter("Members.txt");
+	    m.close();
+	    
+	    FileOutputStream membersFile = new FileOutputStream("Members.txt");
+	    
+	    ObjectOutputStream membersSave = new ObjectOutputStream(membersFile);
+	    
+	    membersSave.writeObject(members);
+	    
+	    
+	    membersSave.close();
+	    membersFile.close();
+	    
+	}
+	catch (IOException e)
+	{
+	    System.out.println("Failed to save members.");
+	}
+	
+	
+    }
+    
+    private static void Load()
+    {
+	try
+	{   
+	    FileInputStream booksFile = new FileInputStream(new File("Books.txt"));
+	    
+	    ObjectInputStream booksSave = new ObjectInputStream(booksFile);
+	    
+	    try
+	    {
+		books = (ArrayList) booksSave.readObject();
+	    }
+	    catch (ClassNotFoundException e)
+	    {
+		e.printStackTrace();
+	    }
+		
+	    
+	    booksSave.close();
+	    booksFile.close();
+	    
+	}
+	catch (IOException e)
+	{
+	    System.out.println("Failed to load books.");
+	}
+	
+	try
+	{
+	    FileInputStream membersFile = new FileInputStream(new File("Members.txt"));
+	    
+	    ObjectInputStream membersSave = new ObjectInputStream(membersFile);
+	    
+	    try
+	    {
+		members = (ArrayList) membersSave.readObject();
+	    }
+	    catch (ClassNotFoundException e)
+	    {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
+		
+	    
+	    membersSave.close();
+	    membersFile.close();
+	    
+	}
+	catch (IOException e)
+	{
+	    System.out.println("Failed to save members.");
+	}
+    }	    
 }
 

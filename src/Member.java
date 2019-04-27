@@ -1,7 +1,7 @@
 import java.time.LocalDateTime;
 import java.util.Random;
 
-public class Member
+public class Member implements java.io.Serializable
 {
     public String id;
     public String name;
@@ -42,7 +42,6 @@ public class Member
 	    {
 		if(booksOut[i] == null)
 		{
-		    booksOut[i] = book;
 		    System.out.println(name + " has checked out \"" + book.name + "\"\n");
 		    book.in = false;
 		    book.dateOut = LocalDateTime.now();
@@ -50,6 +49,7 @@ public class Member
 		    return;
 		}
 	    }
+	  
 	    
 	    System.out.println(name + " already has " + maxBooks + " books checked out.\n");
 	    

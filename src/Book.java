@@ -1,7 +1,7 @@
 import java.time.LocalDateTime;
 import java.util.Random;
 
-public class Book
+public class Book implements java.io.Serializable
 {
     public String name;
     public LocalDateTime dateOut;
