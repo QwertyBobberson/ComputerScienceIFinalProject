@@ -17,7 +17,8 @@ public class Menu
 	//Displays a list of the options
 	System.out.println("1 - Members");
 	System.out.println("2 - Books");
-	System.out.println("3 - Exit");
+	System.out.println("3 - Checked Out Books");
+	System.out.println("4 - Exit");
 	
 	try
 	{
@@ -40,11 +41,15 @@ public class Menu
 		ShowBooks();
 		break;
 	    case 3:
+		ShowCheckedOutBooks();
+		break;
+	    case 4:
 		Quit();
 		break;
 	    default:
 		System.out.println("Please type the number that corresponds to the menu you wish to see.");
 		return;
+		
 	}
 	
 	Save();
@@ -55,7 +60,6 @@ public class Menu
 	boolean found = false;
 	do
 	{
-	    System.out.println("\n\n\n");
 	    //List all members
 	    for(int i = 0; i < members.size(); i++)
 	    {
@@ -100,7 +104,6 @@ public class Menu
 	boolean found = false;
 	do
 	{
-	    System.out.println("\n\n\n");
 	    //List all the books
 	    for(int i = 0; i < books.size(); i++)
 	    {
@@ -130,7 +133,6 @@ public class Menu
 	    {
 		if(books.get(i).ISBN.equals(choice))
 		{
-		    System.out.println("\n\n\n");
 		    books.get(i).PrintInfo();;
 		    found = true;
 		}
@@ -142,7 +144,6 @@ public class Menu
     
     private static void ShowMember(Member member)
     {
-	System.out.println("\n\n\n");
 	member.PrintInfo();
 	//The options on a specific member's profile
 	System.out.println("1 - Check Out");
@@ -190,7 +191,6 @@ public class Menu
 	do
 	{
 	    
-	    System.out.println("\n\n\n");
 	    
 	    
 	    System.out.println("Books Checked Out:");
@@ -233,21 +233,26 @@ public class Menu
     
     private static void ShowCheckOutMenu(Member member)
     {     
-	System.out.println("\n\n\n");
 	
 	
 	for(int i = 0; i < books.size(); i++)
 	{
-	    System.out.println((i + 1) + ": " + books.get(i).name);
+	    System.out.println(books.get(i).ISBN + ": " + books.get(i).name);
 	}
 	
-	System.out.println("Please select a book to check out.");
+	System.out.println("Type the ISBN of the book to check out.");
 	
 	try
 	{	
 	    
 	    choice = input.nextInt();
-	    member.CheckOut(books.get(choice - 1));
+	    for(int i = 0; i < books.size(); i++)
+	    {
+		if(String.format("%04d", choice).equals(books.get(i).ISBN))
+		{
+		    member.CheckOut(books.get(i));
+		}
+	    }
 	}
 	catch (Exception e)
 	{
@@ -259,10 +264,47 @@ public class Menu
 	UserActionCompleted(member);
 	
     }
+
+    private static void ShowCheckedOutBooks()
+    {
+	for(Book book : books)
+	{
+	    if(!book.in)
+	    {
+		System.out.println(book.ISBN + ": " + book.name);		
+	    }
+	}
+	System.out.println("0: Exit");
+	
+	try
+	{	
+	    
+	    choice = input.nextInt();
+	    
+	    if(choice == 0)
+	    {
+		return;
+	    }
+	    
+	    for(int i = 0; i < books.size(); i++)
+	    {
+		if(String.format("%04d", choice).equals(books.get(i).ISBN))
+		{
+		    books.get(i).PrintInfo();
+		}
+	    }
+	}
+	catch (Exception e)
+	{
+	    input.next();
+	    ShowCheckedOutBooks();
+	    return;
+	}
+	
+    }
     
     public static void UserActionCompleted(Member member)
     {    
-	System.out.println("\n\n\n");
 	System.out.println("1 - Back To Menu\n2 - Back to Member Profile");
 	
 	
@@ -296,7 +338,6 @@ public class Menu
     
     public static void BookActionCompleted()
     {
-	System.out.println("\n\n\n");
 	System.out.println("1 - Back To Menu\n2 - Back to Book List");
 	
 	
